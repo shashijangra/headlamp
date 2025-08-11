@@ -34,6 +34,9 @@ type Config struct {
 	PluginsDir                string `koanf:"plugins-dir"`
 	BaseURL                   string `koanf:"base-url"`
 	ProxyURLs                 string `koanf:"proxy-urls"`
+	EnableTLS                 bool   `koanf:"enable-backend-tls"`
+	TLSCertFile               string `koanf:"backend-tls-cert-file"`
+	TLSKeyFile                string `koanf:"backend-tls-key-file"`
 	OidcClientID              string `koanf:"oidc-client-id"`
 	OidcValidatorClientID     string `koanf:"oidc-validator-client-id"`
 	OidcClientSecret          string `koanf:"oidc-client-secret"`
@@ -251,6 +254,10 @@ func flagset() *flag.FlagSet {
 	f.String("listen-addr", "", "Address to listen on; default is empty, which means listening to any address")
 	f.Uint("port", defaultPort, "Port to listen from")
 	f.String("proxy-urls", "", "Allow proxy requests to specified URLs")
+
+	f.Bool("enable-backend-tls", false, "Host Headlamp Backend on HTTPS")
+	f.String("backend-tls-cert-file", "", "Backend TLS Cert file")
+	f.String("backend-tls-key-file", "", "Backend TLS Key file")
 
 	f.String("oidc-client-id", "", "ClientID for OIDC")
 	f.String("oidc-client-secret", "", "ClientSecret for OIDC")

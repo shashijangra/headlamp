@@ -1189,11 +1189,21 @@ func StartHeadlampServer(config *HeadlampConfig) {
 
 	addr := fmt.Sprintf("%s:%d", config.ListenAddr, config.Port)
 
-	// Start server
-	if err := http.ListenAndServe(addr, handler); err != nil { //nolint:gosec
-		logger.Log(logger.LevelError, nil, err, "Failed to start server")
+	if config.EnableTLS {
+		logger.Log(logger.LevelInfo, nil, nil, "Starting server with TLS on "+addr)
+		// Start server with TLS
+		if err := http.ListenAndServeTLS(addr, config.TLSCertFile, config.TLSKeyFile, handler); err != nil { //nolint:gosec
+			logger.Log(logger.LevelError, nil, err, "Failed to start server with TLS")
+			HandleServerStartError(&err)
+		}
+	} else {
+		logger.Log(logger.LevelInfo, nil, nil, "Starting server on "+addr)
+		// Start server without TLS
+		if err := http.ListenAndServe(addr, handler); err != nil { //nolint:gosec
+			logger.Log(logger.LevelError, nil, err, "Failed to start server")
 
-		HandleServerStartError(&err)
+			HandleServerStartError(&err)
+		}
 	}
 }
 
